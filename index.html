@@ -89,12 +89,8 @@
     background: linear-gradient(45deg, #f50057, #c51162);
   }
 
-  iframe#ytPlayer {
-    position: fixed;
-    bottom: 0; left: 0; width: 0; height: 0;
-    border: none;
-    pointer-events: none;
-    opacity: 0;
+  audio {
+    display: none;
   }
 
 </style>
@@ -109,11 +105,9 @@
 <canvas id="animationCanvas"></canvas>
 
 <div id="musicControls">
-  <button id="playBtn">▶️ Play "Duniyaa" Song</button>
+  <button id="playBtn">▶️ Play Romantic Song</button>
+  <audio id="loveSong" src="https://cdn.pixabay.com/download/audio/2023/04/22/audio_beb8c0cc82.mp3?filename=romantic-piano-13862.mp3" preload="auto"></audio>
 </div>
-
-<!-- Hidden YouTube player -->
-<iframe id="ytPlayer" src="https://www.youtube.com/embed/rkAG1XnMWU4?enablejsapi=1&origin=https://yourdomain.com" allow="autoplay" allowfullscreen></iframe>
 
 <script>
   // Animation canvas setup
@@ -134,10 +128,7 @@
   window.addEventListener('resize', resize);
   resize();
 
-  // Vector shapes for boy & girl running
-  // Simple circles and lines for smooth animation
-  // Positions in percentage for responsiveness
-
+  // Runner objects
   const boy = {
     x: -0.1 * w,
     y: 0.7 * h,
@@ -220,7 +211,7 @@
     ctx.closePath();
     ctx.fill();
 
-    // Arms (simple swinging)
+    // Arms swinging
     let armSwing = Math.sin(Date.now()/300) * 15;
     ctx.save();
     ctx.translate(50, 50);
@@ -249,7 +240,7 @@
     ctx.fillRect(25, 35, 20, 50);
     ctx.fillRect(55, 35, 20, 50);
 
-    // Arms hugging (two rectangles overlapped)
+    // Arms hugging
     ctx.fillRect(15, 40, 20, 15);
     ctx.fillRect(55, 40, 20, 15);
 
@@ -259,7 +250,7 @@
   function animate() {
     ctx.clearRect(0, 0, w, h);
 
-    // Draw floating hearts
+    // Floating hearts
     hearts.forEach((heart, i) => {
       heart.y -= heart.speed;
       heart.x += heart.sway * heart.swayDir;
@@ -278,15 +269,14 @@
       drawRunner(boy.x, boy.y, boy.size, '#880e4f');
       drawRunner(girl.x, girl.y, girl.size, '#c51162');
 
-      // Check if close enough to hug
+      // Hug trigger
       if (girl.x - boy.x < 120) {
         hugPhase = true;
         hugTimer = Date.now();
       }
     } else {
-      // Draw hug in center
+      // Draw hug
       drawHug(w / 2 - 50, boy.y - 20, 100);
-      // After 6 seconds, reset runners for repeat
       if (Date.now() - hugTimer > 6000) {
         hugPhase = false;
         boy.x = -0.1 * w;
@@ -298,32 +288,14 @@
   }
   animate();
 
-  // Music control with YouTube iframe API
+  // Music play button
   const playBtn = document.getElementById('playBtn');
-  const ytPlayer = document.getElementById('ytPlayer');
-
-  // Load YouTube Iframe API dynamically
-  let player;
-  function onYouTubeIframeAPIReady() {
-    player = new YT.Player('ytPlayer', {
-      events: {
-        onReady: () => {
-          // Do nothing for now
-        }
-      }
-    });
-  }
-  // Inject API script
-  const tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/iframe_api";
-  document.body.appendChild(tag);
+  const loveSong = document.getElementById('loveSong');
 
   playBtn.addEventListener('click', () => {
-    if(player) {
-      player.playVideo();
-      playBtn.disabled = true;
-      playBtn.textContent = "❤️ Playing...";
-    }
+    loveSong.play();
+    playBtn.disabled = true;
+    playBtn.textContent = "❤️ Playing...";
   });
 </script>
 </body>
