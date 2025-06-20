@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>For Neha — You’re My World ❤️</title>
+<title>For Neha — You’re My Everything ❤️</title>
+<!-- Google Fonts: Dancing Script for a romantic vibe -->
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Poppins&display=swap" rel="stylesheet" />
 <style>
-  /* Reset and base */
   html, body {
     margin: 0; padding: 0;
     height: 100vh; width: 100vw;
@@ -27,7 +28,8 @@
     z-index: 10;
   }
   header h1 {
-    font-size: 3rem;
+    font-family: 'Dancing Script', cursive;
+    font-size: 4rem;
     margin: 0;
     text-shadow:
       0 0 8px #ff6f91,
@@ -35,10 +37,10 @@
     animation: pulse 2s ease-in-out infinite alternate;
   }
   header p {
-    font-size: 1.25rem;
-    margin-top: 8px;
+    font-size: 1.5rem;
+    margin-top: 10px;
     color: #880e4fcc;
-    max-width: 350px;
+    max-width: 400px;
   }
 
   @keyframes pulse {
@@ -92,25 +94,24 @@
   audio {
     display: none;
   }
-
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Neha, You Are My Everything ❤️</h1>
-  <p>From the moment I saw you, my heart knew it found home.<br>Forever yours, always and beyond.</p>
+  <h1>Neha, My Heart Beats For You ❤️</h1>
+  <p>You’re my sunshine on the darkest days, my forever and always. I love you endlessly.</p>
 </header>
 
 <canvas id="animationCanvas"></canvas>
 
 <div id="musicControls">
   <button id="playBtn">▶️ Play Romantic Song</button>
-  <audio id="loveSong" src="https://cdn.pixabay.com/download/audio/2023/04/22/audio_beb8c0cc82.mp3?filename=romantic-piano-13862.mp3" preload="auto"></audio>
+  <audio id="loveSong" src="https://cdn.pixabay.com/download/audio/2021/12/08/audio_96d4f1eabb.mp3?filename=romantic-guitar-16417.mp3" preload="auto"></audio>
 </div>
 
 <script>
-  // Animation canvas setup
+  // Canvas setup
   const canvas = document.getElementById('animationCanvas');
   const ctx = canvas.getContext('2d');
   let w, h;
@@ -128,20 +129,9 @@
   window.addEventListener('resize', resize);
   resize();
 
-  // Runner objects
-  const boy = {
-    x: -0.1 * w,
-    y: 0.7 * h,
-    size: 50,
-    speed: 0.15, // fraction of screen width per frame
-  };
-  const girl = {
-    x: 1.1 * w,
-    y: 0.7 * h,
-    size: 50,
-    speed: 0.15,
-  };
-
+  // Characters
+  const boy = { x: -0.1 * w, y: 0.7 * h, size: 50, speed: 0.15 };
+  const girl = { x: 1.1 * w, y: 0.7 * h, size: 50, speed: 0.15 };
   let hugPhase = false;
   let hugTimer = 0;
 
@@ -158,7 +148,6 @@
       swayDir: Math.random() > 0.5 ? 1 : -1,
     };
   }
-
   for(let i=0; i<25; i++) hearts.push(createHeart());
 
   function drawHeart(x, y, size, alpha) {
@@ -262,20 +251,17 @@
     });
 
     if (!hugPhase) {
-      // Move runners
       boy.x += boy.speed * w * 0.0025;
       girl.x -= girl.speed * w * 0.0025;
 
       drawRunner(boy.x, boy.y, boy.size, '#880e4f');
       drawRunner(girl.x, girl.y, girl.size, '#c51162');
 
-      // Hug trigger
       if (girl.x - boy.x < 120) {
         hugPhase = true;
         hugTimer = Date.now();
       }
     } else {
-      // Draw hug
       drawHug(w / 2 - 50, boy.y - 20, 100);
       if (Date.now() - hugTimer > 6000) {
         hugPhase = false;
@@ -283,17 +269,18 @@
         girl.x = 1.1 * w;
       }
     }
-
     requestAnimationFrame(animate);
   }
   animate();
 
-  // Music play button
+  // Music play button logic
   const playBtn = document.getElementById('playBtn');
   const loveSong = document.getElementById('loveSong');
 
   playBtn.addEventListener('click', () => {
-    loveSong.play();
+    loveSong.play().catch(() => {
+      alert('Playback failed. Please interact with the page and try again.');
+    });
     playBtn.disabled = true;
     playBtn.textContent = "❤️ Playing...";
   });
