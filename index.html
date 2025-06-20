@@ -17,9 +17,10 @@
     justify-content: center;
     align-items: center;
     user-select: none;
+    flex-direction: column;
+    text-align: center;
   }
   #content {
-    text-align: center;
     max-width: 480px;
     padding: 30px;
     background: rgba(255, 255, 255, 0.3);
@@ -27,7 +28,6 @@
     box-shadow: 0 8px 32px 0 rgba(255, 64, 129, 0.3);
     backdrop-filter: blur(10px);
     z-index: 10;
-    position: relative;
   }
   #content h1 {
     font-family: 'Dancing Script', cursive;
@@ -65,28 +65,6 @@
     pointer-events: none;
     z-index: 0;
   }
-  #musicControls {
-    position: fixed;
-    bottom: 25px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 20;
-  }
-  #playBtn {
-    background: linear-gradient(45deg, #ff4081, #f50057);
-    border: none;
-    border-radius: 30px;
-    padding: 15px 40px;
-    font-size: 1.2rem;
-    color: white;
-    cursor: pointer;
-    box-shadow: 0 6px 15px #ff4081cc;
-    user-select: none;
-    transition: background 0.3s ease;
-  }
-  #playBtn:hover {
-    background: linear-gradient(45deg, #f50057, #c51162);
-  }
 </style>
 </head>
 <body>
@@ -98,16 +76,12 @@
 
 <canvas id="animationCanvas"></canvas>
 
-<div id="musicControls">
-  <button id="playBtn" aria-label="Play romantic song">▶️ Play Romantic Song</button>
-  <audio id="loveSong" preload="auto" style="display:none;">
-    <source src="https://cdn.pixabay.com/download/audio/2021/12/08/audio_96d4f1eabb.mp3?filename=romantic-guitar-16417.mp3" type="audio/mpeg" />
-    Your browser does not support the audio element.
-  </audio>
-</div>
+<audio id="loveSong" autoplay loop>
+  <source src="https://cdn.pixabay.com/download/audio/2021/12/08/audio_96d4f1eabb.mp3?filename=romantic-guitar-16417.mp3" type="audio/mpeg" />
+  Your browser does not support the audio element.
+</audio>
 
 <script>
-  // Canvas setup
   const canvas = document.getElementById('animationCanvas');
   const ctx = canvas.getContext('2d');
   let w, h;
@@ -119,7 +93,7 @@
     canvas.height = h * devicePixelRatio;
     canvas.style.width = w + 'px';
     canvas.style.height = h + 'px';
-    ctx.setTransform(1,0,0,1,0,0);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.scale(devicePixelRatio, devicePixelRatio);
   }
   window.addEventListener('resize', resize);
@@ -138,12 +112,12 @@
       swayDir: Math.random() > 0.5 ? 1 : -1,
     };
   }
-  for(let i=0; i<25; i++) hearts.push(createHeart());
+  for(let i = 0; i < 25; i++) hearts.push(createHeart());
 
   function drawHeart(x, y, size, alpha) {
     ctx.save();
     ctx.translate(x, y);
-    ctx.scale(size/24, size/24);
+    ctx.scale(size / 24, size / 24);
     ctx.globalAlpha = alpha;
     ctx.fillStyle = '#f50057';
     ctx.beginPath();
@@ -159,83 +133,8 @@
     ctx.restore();
   }
 
-  // Simple boy and girl runner shapes
-  function drawRunner(x, y, size, color) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(size / 100, size / 100);
-    ctx.fillStyle = color;
-
-    // Head
-    ctx.beginPath();
-    ctx.arc(50, 20, 15, 0, Math.PI*2);
-    ctx.fill();
-
-    // Body
-    ctx.fillRect(40, 35, 20, 40);
-
-    // Legs
-    ctx.beginPath();
-    ctx.moveTo(40, 75);
-    ctx.lineTo(25, 95);
-    ctx.lineTo(30, 100);
-    ctx.lineTo(45, 80);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.moveTo(60, 75);
-    ctx.lineTo(75, 95);
-    ctx.lineTo(70, 100);
-    ctx.lineTo(55, 80);
-    ctx.closePath();
-    ctx.fill();
-
-    // Arms swinging
-    let armSwing = Math.sin(Date.now()/300) * 15;
-    ctx.save();
-    ctx.translate(50, 50);
-    ctx.rotate((color === '#880e4f' ? 1 : -1) * armSwing * Math.PI / 180);
-    ctx.fillRect(-5, 0, 10, 30);
-    ctx.restore();
-
-    ctx.restore();
-  }
-
-  function drawHug(x, y, size) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(size/100, size/100);
-
-    // Heads
-    ctx.fillStyle = '#880e4f';
-    ctx.beginPath();
-    ctx.arc(35, 20, 15, 0, Math.PI*2); // boy head
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(65, 20, 15, 0, Math.PI*2); // girl head
-    ctx.fill();
-
-    // Bodies
-    ctx.fillRect(25, 35, 20, 50);
-    ctx.fillRect(55, 35, 20, 50);
-
-    // Arms hugging
-    ctx.fillRect(15, 40, 20, 15);
-    ctx.fillRect(55, 40, 20, 15);
-
-    ctx.restore();
-  }
-
-  let boy = { x: -0.1 * w, y: 0.7 * h, size: 50, speed: 0.15 };
-  let girl = { x: 1.1 * w, y: 0.7 * h, size: 50, speed: 0.15 };
-  let hugPhase = false;
-  let hugTimer = 0;
-
   function animate() {
     ctx.clearRect(0, 0, w, h);
-
-    // Floating hearts
     hearts.forEach((heart, i) => {
       heart.y -= heart.speed;
       heart.x += heart.sway * heart.swayDir;
@@ -245,41 +144,9 @@
       }
       drawHeart(heart.x, heart.y, heart.size, heart.alpha);
     });
-
-    if (!hugPhase) {
-      boy.x += boy.speed * w * 0.0025;
-      girl.x -= girl.speed * w * 0.0025;
-
-      drawRunner(boy.x, boy.y, boy.size, '#880e4f');
-      drawRunner(girl.x, girl.y, girl.size, '#c51162');
-
-      if (girl.x - boy.x < 120) {
-        hugPhase = true;
-        hugTimer = Date.now();
-      }
-    } else {
-      drawHug(w / 2 - 50, boy.y - 20, 100);
-      if (Date.now() - hugTimer > 6000) {
-        hugPhase = false;
-        boy.x = -0.1 * w;
-        girl.x = 1.1 * w;
-      }
-    }
     requestAnimationFrame(animate);
   }
   animate();
-
-  // Music play button logic
-  const playBtn = document.getElementById('playBtn');
-  const loveSong = document.getElementById('loveSong');
-
-  playBtn.addEventListener('click', () => {
-    loveSong.style.display = 'block'; // show native controls
-    loveSong.play().catch(() => {
-      alert('Unable to play the audio automatically. Please use controls.');
-    });
-    playBtn.style.display = 'none'; // hide play button once playing
-  });
 </script>
 
 </body>
